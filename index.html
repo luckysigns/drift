@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Forma — habits that flow with you</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -24,16 +26,16 @@ h3{font-size:1.1rem;font-weight:400}
 .screen{display:none;animation:fade .4s ease}
 .screen.active{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-header{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
-.bar{display:flex;align-items:center;justify-content:space-between;height:56px;max-width:880px;margin:0 auto;padding:0 20px;gap:10px}
-.bar .logo{flex-shrink:0}
-.bar .who{overflow:hidden;text-overflow:ellipsis;max-width:62%}
+header{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line);padding-top:max(env(safe-area-inset-top,0px),14px)}
+.bar{display:flex;align-items:center;justify-content:space-between;min-height:52px;max-width:880px;margin:0 auto;padding:6px 20px 8px;gap:10px}
+.bar .logo{flex-shrink:0;line-height:1}
+.bar .who{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:62%}
 .logo{font-family:Georgia,serif;font-size:1.35rem;display:flex;align-items:center;gap:8px}
 .logo .dot{width:9px;height:9px;border-radius:50%;background:var(--clay);display:inline-block;animation:drift 5s ease-in-out infinite}
 @keyframes drift{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
 .who{font-size:.82rem;color:var(--muted);cursor:pointer;white-space:nowrap}
 .who:hover{color:var(--ink)}
-nav{display:flex;gap:4px;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:5px;margin:18px 0 26px;position:sticky;top:calc(56px + env(safe-area-inset-top,0px));z-index:20}
+nav{display:flex;gap:4px;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:5px;margin:18px 0 26px;position:sticky;top:calc(66px + max(env(safe-area-inset-top,0px),14px));z-index:20}
 nav button{flex:1;border:none;background:transparent;padding:9px 4px;border-radius:10px;font:inherit;font-size:.82rem;color:var(--muted);cursor:pointer;transition:.18s}
 nav button.on{background:var(--ink);color:var(--paper)}
 nav button:not(.on):hover{color:var(--ink)}
