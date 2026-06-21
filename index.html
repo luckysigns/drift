@@ -452,6 +452,7 @@ async function boot(){
 function hardReset(){
   localStorage.removeItem('forma_'+USER.id);
   STATE={prefs:{meals:{Breakfast:[],Lunch:[],Dinner:[],Snacks:[]},moveLikes:[],outdoors:null,goal:null,time:null},done:{},dayNudges:{},onboarded:false};
+  obIdx=0; activeMeal='Breakfast'; browseFilter='all';
   saveState(); show('onboard');
   document.getElementById('obIntro').style.display='block';
   document.getElementById('obFlow').style.display='none';
@@ -684,7 +685,30 @@ function renderPlan(){
     <h3 class="serif" style="margin:6px 0 2px"><span class="tagline tag-food">Eat</span></h3>
     ${f.map(s=>cardHTML(s,'clay')).join('')}
     <h3 class="serif" style="margin:18px 0 2px"><span class="tagline tag-move">Move</span></h3>
-    ${m.map(s=>cardHTML(s,'moss')).join('')}`;
+    ${m.map(s=>cardHTML(s,'moss')).join('')}
+    <div class="card" style="text-align:center;margin-top:24px;border-style:dashed">
+      <h3 class="serif" style="margin-bottom:6px">Want to start over?</h3>
+      <p class="mini" style="margin-bottom:14px">Retake just rebuilds your plan and keeps your streak. Start fresh wipes everything — preferences, progress, all of it.</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="redoOnboard()">Retake the quiz</button>
+        <button class="btn btn-ghost btn-sm" id="freshBtn" onclick="confirmFresh()" style="color:var(--clay);border-color:var(--clay-soft)">Start fresh</button>
+      </div>
+    </div>`;
+}
+let freshArmed=false;
+function confirmFresh(){
+  const b=document.getElementById('freshBtn');
+  if(!freshArmed){
+    freshArmed=true;
+    b.textContent='Tap again to wipe everything';
+    b.style.background='var(--clay)';
+    b.style.color='#fff';
+    setTimeout(()=>{ if(freshArmed){ freshArmed=false; b.textContent='Start fresh'; b.style.background=''; b.style.color='var(--clay)'; } },4000);
+    return;
+  }
+  freshArmed=false;
+  hardReset();
+  toast('Cleared. Starting over.');
 }
 function cardHTML(s,accent){
   return `<div class="card">
