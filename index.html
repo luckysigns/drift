@@ -3,55 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Drift — habits that flow with you</title>
+<title>Forma — habits that flow with you</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
-  --ink:#1a2b2e;
-  --paper:#f6f3ec;
-  --paper-2:#efeadf;
-  --moss:#3f6b58;
-  --moss-soft:#6d9a82;
-  --clay:#c66a4a;
-  --clay-soft:#e0a583;
-  --sky:#7794a8;
-  --line:#d8d1c2;
-  --muted:#6b7570;
+  --ink:#1a2b2e;--paper:#f6f3ec;--paper-2:#efeadf;
+  --moss:#3f6b58;--moss-soft:#6d9a82;--clay:#c66a4a;--clay-soft:#e0a583;
+  --sky:#7794a8;--line:#d8d1c2;--muted:#6b7570;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--paper);color:var(--ink);font-family:'Inter',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body{min-height:100vh}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-
-/* type */
 h1,h2,h3,.serif{font-family:Georgia,'Times New Roman',serif}
 h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:400;line-height:1.05;letter-spacing:-.02em}
 h2{font-size:1.5rem;font-weight:400;letter-spacing:-.01em}
 h3{font-size:1.1rem;font-weight:400}
 .eyebrow{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600}
-
-/* layout */
 .wrap{max-width:880px;margin:0 auto;padding:0 20px}
 .screen{display:none;animation:fade .4s ease}
 .screen.active{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-
-/* top bar */
-header{position:sticky;top:0;z-index:30;background:rgba(246,243,236,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line)}
 .bar{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:880px;margin:0 auto;padding:0 20px}
 .logo{font-family:Georgia,serif;font-size:1.35rem;display:flex;align-items:center;gap:8px}
 .logo .dot{width:9px;height:9px;border-radius:50%;background:var(--clay);display:inline-block;animation:drift 5s ease-in-out infinite}
 @keyframes drift{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
-.who{font-size:.82rem;color:var(--muted);cursor:pointer}
+.who{font-size:.82rem;color:var(--muted);cursor:pointer;white-space:nowrap}
 .who:hover{color:var(--ink)}
-
-/* nav */
 nav{display:flex;gap:4px;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:5px;margin:18px 0 26px;position:sticky;top:70px;z-index:20}
 nav button{flex:1;border:none;background:transparent;padding:9px 4px;border-radius:10px;font:inherit;font-size:.82rem;color:var(--muted);cursor:pointer;transition:.18s}
 nav button.on{background:var(--ink);color:var(--paper)}
 nav button:not(.on):hover{color:var(--ink)}
-
-/* cards */
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px}
 .card.moss{background:var(--moss);color:var(--paper);border-color:var(--moss)}
 .card.clay{background:var(--clay);color:#fff;border-color:var(--clay)}
@@ -59,46 +42,34 @@ nav button:not(.on):hover{color:var(--ink)}
 .card h3{margin-bottom:6px}
 .card p{color:var(--muted);line-height:1.55;font-size:.95rem}
 .card.moss p,.card.clay p{color:rgba(255,255,255,.86)}
-
-/* buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;padding:13px 22px;font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;transition:.18s}
 .btn-primary{background:var(--ink);color:var(--paper)}
 .btn-primary:hover{background:#0e1a1c}
 .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
 .btn-ghost:hover{border-color:var(--ink)}
+.btn-sm{padding:9px 15px;font-size:.84rem}
 .btn-block{width:100%}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-
-/* onboarding chips */
 .chips{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
 .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 16px;font:inherit;font-size:.9rem;cursor:pointer;transition:.15s;color:var(--ink)}
 .chip:hover{border-color:var(--moss-soft)}
 .chip.sel{background:var(--moss);color:#fff;border-color:var(--moss)}
 .chip.sel.clay-sel{background:var(--clay);border-color:var(--clay)}
-
 .step-dots{display:flex;gap:7px;margin:0 0 8px}
 .step-dots i{width:26px;height:4px;border-radius:2px;background:var(--line);transition:.3s}
 .step-dots i.done{background:var(--clay)}
 .q{margin:4px 0 2px}
 .q-sub{color:var(--muted);font-size:.92rem;margin-bottom:6px}
-
-/* auth */
 .auth-wrap{max-width:400px;margin:8vh auto;text-align:center}
 input.field{width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;padding:13px 15px;font:inherit;font-size:.95rem;margin:10px 0}
 input.field:focus{outline:2px solid var(--moss-soft);border-color:transparent}
 .note{font-size:.82rem;color:var(--muted);margin-top:10px;line-height:1.5}
-
-/* hero onboarding intro */
 .hero{text-align:center;padding:7vh 0 3vh}
 .hero h1{margin-bottom:14px}
 .hero .lead{font-size:1.1rem;color:var(--muted);max-width:520px;margin:0 auto 8px;line-height:1.6}
-
-/* filters */
 .filterbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
 .fpill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;font:inherit;font-size:.82rem;cursor:pointer;color:var(--muted)}
 .fpill.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-
-/* progress */
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
 .stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;text-align:center}
 .stat b{font-family:Georgia,serif;font-size:2rem;font-weight:400;display:block;color:var(--moss)}
@@ -106,10 +77,8 @@ input.field:focus{outline:2px solid var(--moss-soft);border-color:transparent}
 .goal-track{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
 .bar{height:9px;background:var(--paper-2);border-radius:5px;overflow:hidden;margin-top:10px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--moss),var(--moss-soft));border-radius:5px;transition:width .5s}
-
 .empty{text-align:center;color:var(--muted);padding:36px 16px;font-size:.92rem}
-.split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:640px){.split{grid-template-columns:1fr}.stat b{font-size:1.6rem}}
+@media(max-width:640px){.stat b{font-size:1.6rem}}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);padding:13px 22px;border-radius:12px;font-size:.9rem;opacity:0;transition:.3s;z-index:100;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .mini{font-size:.8rem;color:var(--muted)}
@@ -118,14 +87,25 @@ input.field:focus{outline:2px solid var(--moss-soft);border-color:transparent}
 .tagline{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:6px;font-weight:700}
 .tag-food{background:var(--clay-soft);color:#6b2e18}
 .tag-move{background:var(--moss-soft);color:#1c3327}
+/* meal picker */
+.meal-tabs{display:flex;gap:8px;margin:16px 0 4px;flex-wrap:wrap}
+.meal-tab{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 16px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink);position:relative;transition:.15s}
+.meal-tab.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.meal-tab .badge{display:inline-block;margin-left:7px;background:var(--clay);color:#fff;border-radius:999px;font-size:.7rem;padding:1px 7px;font-weight:700}
+.meal-tab.active .badge{background:var(--clay-soft);color:#6b2e18}
+.add-row{display:flex;gap:8px;margin-top:12px}
+.add-row input{flex:1;margin:0}
+.custom-tag{display:inline-flex;align-items:center;gap:6px;background:var(--clay);color:#fff;border-radius:999px;padding:8px 14px;font-size:.88rem}
+.custom-tag b{cursor:pointer;font-weight:700;opacity:.8}
+.custom-tag b:hover{opacity:1}
 </style>
 </head>
 <body>
 
-<!-- ============ AUTH ============ -->
+<!-- AUTH -->
 <div id="auth" class="screen active">
   <div class="auth-wrap">
-    <div class="logo" style="justify-content:center;font-size:2rem;margin-bottom:8px"><span class="dot"></span>Drift</div>
+    <div class="logo" style="justify-content:center;font-size:2rem;margin-bottom:8px"><span class="dot"></span>Forma</div>
     <p class="lead" style="color:var(--muted);margin-bottom:20px">Habits that flow with what you already love.</p>
     <input id="email" class="field" type="email" placeholder="you@email.com" autocomplete="email">
     <button class="btn btn-primary btn-block" onclick="sendMagic()">Send me a link</button>
@@ -133,26 +113,22 @@ input.field:focus{outline:2px solid var(--moss-soft);border-color:transparent}
   </div>
 </div>
 
-<!-- ============ APP SHELL ============ -->
+<!-- SHELL -->
 <div id="app" style="display:none">
-  <header>
-    <div class="bar">
-      <div class="logo"><span class="dot"></span>Drift</div>
-      <span class="who" onclick="signOut()" id="whoLabel">sign out</span>
-    </div>
-  </header>
+  <header><div class="bar">
+    <div class="logo"><span class="dot"></span>Forma</div>
+    <span class="who" onclick="signOut()" id="whoLabel">sign out</span>
+  </div></header>
 
   <div class="wrap">
-
-    <!-- ===== ONBOARDING ===== -->
+    <!-- ONBOARDING -->
     <div id="onboard" class="screen">
       <div class="hero" id="obIntro">
         <span class="eyebrow">Welcome</span>
         <h1>Let's not change everything.<br>Let's start with what you like.</h1>
-        <p class="lead">Tell us a few things you already enjoy. Drift shapes diet and movement around those, instead of handing you a program to white-knuckle through.</p>
-        <button class="btn btn-primary" onclick="obStep(0)" style="margin-top:12px">Start</button>
+        <p class="lead">Tell us what you already enjoy eating and doing. Forma shapes diet and movement around those, instead of handing you a program to white-knuckle through.</p>
+        <button class="btn btn-primary" onclick="obStart()" style="margin-top:12px">Start</button>
       </div>
-
       <div id="obFlow" style="display:none;padding-top:10px">
         <div class="step-dots" id="dots"></div>
         <div id="obBody"></div>
@@ -163,7 +139,7 @@ input.field:focus{outline:2px solid var(--moss-soft);border-color:transparent}
       </div>
     </div>
 
-    <!-- ===== MAIN (nav + screens) ===== -->
+    <!-- MAIN -->
     <div id="main" class="screen">
       <nav>
         <button data-t="today" class="on" onclick="tab('today')">Today</button>
@@ -171,278 +147,343 @@ input.field:focus{outline:2px solid var(--moss-soft);border-color:transparent}
         <button data-t="browse" onclick="tab('browse')">Browse</button>
         <button data-t="progress" onclick="tab('progress')">Progress</button>
       </nav>
-
       <div id="t-today" class="tabpane"></div>
       <div id="t-plan" class="tabpane" style="display:none"></div>
       <div id="t-browse" class="tabpane" style="display:none"></div>
       <div id="t-progress" class="tabpane" style="display:none"></div>
     </div>
-
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* ============================================================
-   SUPABASE  (shared "Streakly" project — same as Stacks/Cutlist)
-   ============================================================ */
-const SB_URL = 'https://ywjtbzxfdudrqsvsslzs.supabase.co';
-const SB_KEY = 'sb_publishable_Vt5ul1fZGuwxG8zq_ejyNw_kJackpiu';
-const sb = window.supabase.createClient(SB_URL, SB_KEY);
+/* SUPABASE — shared "Streakly" project */
+const SB_URL='https://ywjtbzxfdudrqsvsslzs.supabase.co';
+const SB_KEY='sb_publishable_Vt5ul1fZGuwxG8zq_ejyNw_kJackpiu';
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
 
-let USER = null;
-let STATE = {
-  prefs:{ food:[], moveLikes:[], outdoors:null, goal:null, time:null },
-  done:{},            // 'YYYY-MM-DD': {food:true, move:true}
-  goalProgress:{},    // goalKey: count
-  onboarded:false
+let USER=null;
+let STATE={
+  prefs:{ meals:{Breakfast:[],Lunch:[],Dinner:[],Snacks:[]}, moveLikes:[], outdoors:null, goal:null, time:null },
+  done:{}, dayNudges:{}, onboarded:false
 };
 
-/* ============================================================
-   RULE ENGINE  —  preset logic, no AI, works offline
-   ============================================================ */
-const FOOD_OPTS = ['Breakfast','Eggs','Chicken','Fish','Greek yogurt','Beans & lentils',
-  'Leafy greens','Berries','Avocado','Oats','Rice & grains','Pasta','Cheese','Nuts',
-  'Smoothies','Soup','Sweets','Coffee'];
-
-const MOVE_OPTS = ['Walking','Hiking','Running','Cycling','Swimming','Soccer','Basketball',
-  'Dancing','Yoga','Lifting weights','Bodyweight','Climbing','Tennis','Stretching'];
-
-const GOALS = [
-  {k:'muscle', label:'Build muscle'},
-  {k:'lean',   label:'Lean out / lose fat'},
-  {k:'energy', label:'More energy day to day'},
-  {k:'longevity', label:'Age well & stay mobile'},
-  {k:'calm',   label:'Stress less, sleep better'}
+/* ====== RULE ENGINE ====== */
+const MEAL_OPTS={
+  Breakfast:['Eggs','Oats','Greek yogurt','Smoothies','Toast','Fruit','Pancakes','Coffee','Cereal','Bacon'],
+  Lunch:['Salad','Sandwich','Soup','Rice bowl','Wrap','Leftovers','Chicken','Pasta','Sushi','Burrito'],
+  Dinner:['Chicken','Fish','Beef','Pasta','Rice & grains','Stir-fry','Roast veg','Curry','Tacos','Pizza'],
+  Snacks:['Nuts','Fruit','Greek yogurt','Cheese','Chips','Sweets','Protein bar','Veggies & dip','Popcorn','Chocolate']
+};
+const MOVE_OPTS=['Walking','Hiking','Running','Cycling','Swimming','Soccer','Basketball','Dancing','Yoga','Lifting weights','Bodyweight','Climbing','Tennis','Stretching'];
+const GOALS=[
+  {k:'muscle',label:'Build muscle'},
+  {k:'lean',label:'Lose fat / lean out'},
+  {k:'recomp',label:'Build muscle & lose fat'},
+  {k:'energy',label:'More energy'},
+  {k:'longevity',label:'Age well & stay mobile'},
+  {k:'calm',label:'Stress less, sleep better'}
 ];
+const TIMES=[{k:'low',label:'15–20 min / day'},{k:'mid',label:'30–45 min / day'},{k:'high',label:'An hour+ / day'}];
 
-const TIMES = [
-  {k:'low', label:'15–20 min'},
-  {k:'mid', label:'30–45 min'},
-  {k:'high',label:'An hour+'}
-];
-
-/* ---- FOOD suggestion bank, keyed by what you like ---- */
+function allFoods(){
+  const m=STATE.prefs.meals; let a=[];
+  for(const k in m) a=a.concat(m[k]);
+  return a;
+}
 function foodSuggestions(){
-  const f = STATE.prefs.food, goal = STATE.prefs.goal, out=[];
-  const has = x => f.includes(x);
+  const m=STATE.prefs.meals, goal=STATE.prefs.goal, out=[];
+  const all=allFoods(), has=x=>all.some(f=>f.toLowerCase()===x.toLowerCase());
+  const bSel=(m.Breakfast||[]), sSel=(m.Snacks||[]);
 
-  if(has('Breakfast')){
-    out.push({tag:'Anchor your morning', tip:'You love breakfast — make it the meal that sets the day. Aim for protein + fiber and ease off the sugar so you stay full till lunch.', why:'Protein at breakfast blunts mid-morning cravings.'});
-    if(has('Eggs')) out.push({tag:'Easy win', tip:'Eggs plus any vegetable you have on hand. Spinach, peppers, leftover greens — all fair game.'});
-    if(has('Oats')) out.push({tag:'Swap idea', tip:'Oats with berries and nuts instead of sweet cereal. Same comfort, way more fiber and staying power.'});
-    if(has('Smoothies')) out.push({tag:'Build it better', tip:'Smoothie? Add a scoop of protein and a handful of greens. You won\'t taste the spinach.'});
+  if(bSel.length){
+    out.push({tag:'Anchor your morning',tip:'You logged a real breakfast — make it the meal that sets the day. Aim for protein + fiber and ease off sugar so you stay full till lunch.',why:'Protein at breakfast blunts mid-morning cravings.'});
+    if(has('Eggs')) out.push({tag:'Easy win',tip:'Eggs plus any vegetable on hand. Spinach, peppers, leftover greens — all fair game.'});
+    if(has('Oats')||has('Cereal')) out.push({tag:'Swap idea',tip:'Oats with fruit and nuts instead of sweet cereal. Same comfort, way more fiber and staying power.'});
+    if(has('Smoothies')) out.push({tag:'Build it better',tip:'Smoothie? Add a scoop of protein and a handful of greens. You won\'t taste the spinach.'});
   }
-  if(has('Leafy greens')) out.push({tag:'Dinner move', tip:'You\'re into greens — make them half the plate at dinner. Roast or sauté so they\'re something you actually want to eat.'});
-  if(has('Chicken')||has('Fish')) out.push({tag:'Protein you like', tip:`Lean on ${has('Fish')?'fish':'chicken'} a few dinners a week. Batch-cook once and you\'ve got lunches sorted too.`});
-  if(has('Beans & lentils')) out.push({tag:'Cheap & filling', tip:'Beans and lentils stretch any meal and keep you full for hours. Toss them into soups, bowls, or salads.'});
-  if(has('Greek yogurt')) out.push({tag:'Snack upgrade', tip:'Greek yogurt + berries beats most packaged snacks — protein, fiber, and it feels like a treat.'});
-  if(has('Berries')) out.push({tag:'Sweet, handled', tip:'Craving sweet? Berries first. They scratch the itch with fiber instead of a sugar spike.'});
-  if(has('Sweets')) out.push({tag:'No banning', tip:'You like sweets — keep them, just pair with protein or eat after a real meal so the crash is softer. No food is off-limits here.'});
-  if(has('Pasta')||has('Rice & grains')) out.push({tag:'Smarter carbs', tip:'Load the pasta or rice bowl with veg and protein first, carbs second. Same dish, steadier energy.'});
-  if(has('Coffee')) out.push({tag:'Coffee note', tip:'Coffee\'s fine — just try to eat something with protein alongside it rather than running on caffeine till noon.'});
+  if(has('Salad')||has('Roast veg')||has('Veggies & dip')) out.push({tag:'You like veg',tip:'Make vegetables half the plate at your main meals. Roast or sauté so they\'re something you actually want to eat.'});
+  if(has('Chicken')||has('Fish')||has('Beef')) out.push({tag:'Protein you like',tip:`Lean on ${has('Fish')?'fish':has('Chicken')?'chicken':'lean beef'} a few dinners a week. Batch-cook once and lunches sort themselves out.`});
+  if(has('Greek yogurt')) out.push({tag:'Snack upgrade',tip:'Greek yogurt + fruit beats most packaged snacks — protein, fiber, and it feels like a treat.'});
+  if(sSel.some(x=>['Sweets','Chocolate','Chips'].includes(x))) out.push({tag:'No banning',tip:'You like a treat — keep it, just pair with protein or eat after a real meal so the crash is softer. Nothing\'s off-limits here.'});
+  if(has('Pasta')||has('Rice & grains')||has('Rice bowl')) out.push({tag:'Smarter carbs',tip:'Load the bowl with veg and protein first, carbs second. Same dish, steadier energy.'});
+  if(has('Coffee')) out.push({tag:'Coffee note',tip:'Coffee\'s fine — just eat something with protein alongside it rather than running on caffeine till noon.'});
 
-  // goal-flavored nudge
-  if(goal==='muscle') out.push({tag:'For building muscle', tip:'Aim to get a palm-sized portion of protein at most meals. That\'s the lever that matters most for growth.'});
-  if(goal==='lean') out.push({tag:'For leaning out', tip:'Keep the foods you like, just bump the protein and veg so you\'re full on fewer calories. Volume over restriction.'});
-  if(goal==='energy') out.push({tag:'For steady energy', tip:'Pair carbs with protein or fat every time. Lone carbs spike then crash you.'});
-  if(goal==='calm') out.push({tag:'For better sleep', tip:'Push the bulk of caffeine before noon and keep dinner a little lighter. Both pay off at bedtime.'});
+  if(goal==='muscle'||goal==='recomp') out.push({tag:'For building muscle',tip:'Get a palm-sized portion of protein at most meals. That\'s the lever that matters most for growth.'});
+  if(goal==='lean'||goal==='recomp') out.push({tag:'For leaning out',tip:'Keep the foods you like, just bump protein and veg so you\'re full on fewer calories. Volume over restriction.'});
+  if(goal==='energy') out.push({tag:'For steady energy',tip:'Pair carbs with protein or fat every time. Lone carbs spike then crash you.'});
+  if(goal==='calm') out.push({tag:'For better sleep',tip:'Push most caffeine before noon and keep dinner a little lighter. Both pay off at bedtime.'});
 
-  if(!out.length) out.push({tag:'Start here', tip:'Pick one meal you eat most days and make it protein-and-fiber forward. One reliable meal beats a perfect plan you won\'t keep.'});
+  if(!out.length) out.push({tag:'Start here',tip:'Pick one meal you eat most days and make it protein-and-fiber forward. One reliable meal beats a perfect plan you won\'t keep.'});
   return out;
 }
-
-/* ---- MOVEMENT suggestions, keyed by what you like + goal + time ---- */
 function moveSuggestions(){
   const m=STATE.prefs.moveLikes, goal=STATE.prefs.goal, out=[];
-  const has=x=>m.includes(x);
-  const outdoors=STATE.prefs.outdoors;
+  const has=x=>m.includes(x), outdoors=STATE.prefs.outdoors;
+  if(has('Walking')) out.push({tag:'Lowest friction',tip:'A walk around the block after dinner, most days. The most underrated thing you can do for your body. Build from there.',cadence:'Daily-ish'});
+  if(has('Hiking')||outdoors==='yes') out.push({tag:'You like being outside',tip:'Put one real hike on the calendar each week. Even a flat trail counts — the point is time on your feet outdoors.',cadence:'1–2× / week'});
+  if(has('Soccer')) out.push({tag:'Can\'t play a full game?',tip:'No problem — juggle the ball in the yard, do passing drills, or play a short small-sided game. Keep the sport you love without needing 90 minutes.',cadence:'1–2× / week'});
+  if(has('Basketball')) out.push({tag:'Hoops, scaled',tip:'Shooting around counts. 20 minutes of shots and rebounds is real movement without a full run.',cadence:'1–2× / week'});
+  if(has('Cycling')) out.push({tag:'Ride for it',tip:'Swap one short car trip for the bike, or do a longer weekend ride. Easy on the joints, great for the heart.',cadence:'2–3× / week'});
+  if(has('Swimming')) out.push({tag:'Joint-friendly cardio',tip:'A swim once or twice a week works everything without the pounding. Great on recovery days.',cadence:'1–2× / week'});
+  if(has('Dancing')) out.push({tag:'Cardio that\'s fun',tip:'Put on a few songs and actually move. A class or a kitchen session both count.',cadence:'2–3× / week'});
+  if(has('Yoga')||has('Stretching')) out.push({tag:'Mobility',tip:'Ten minutes of stretching or a short yoga flow keeps you loose and supports everything else.',cadence:'Most days'});
+  if(has('Climbing')) out.push({tag:'Strength + problem-solving',tip:'A bouldering session is full-body strength that doesn\'t feel like a workout. Twice a week is plenty to progress.',cadence:'1–2× / week'});
+  if(has('Running')) out.push({tag:'Keep it easy',tip:'Most runs should be conversational pace. Add one faster session only when you feel like it.',cadence:'2–3× / week'});
+  if(has('Tennis')) out.push({tag:'Play to move',tip:'A hit with a friend is cardio that doesn\'t feel like it. Even a casual rally session counts.',cadence:'1–2× / week'});
 
-  if(has('Walking')) out.push({tag:'Lowest friction', tip:'A walk around the block after dinner, most days. It\'s the most underrated thing you can do for your body. Build from there.', cadence:'Daily-ish'});
-  if(has('Hiking')||outdoors==='yes') out.push({tag:'You like being outside', tip:'Put one real hike on the calendar each week. Even a flat trail counts — the point is time on your feet outdoors.', cadence:'1–2× / week'});
-  if(has('Soccer')) out.push({tag:'Can\'t play a full game?', tip:'No problem — juggle the ball in the yard, do passing drills, or play a short small-sided game. You keep the sport you love without needing 90 minutes.', cadence:'1–2× / week'});
-  if(has('Basketball')) out.push({tag:'Hoops, scaled', tip:'Shooting around counts. 20 minutes of shots and rebounds is real movement without needing a full run.', cadence:'1–2× / week'});
-  if(has('Cycling')) out.push({tag:'Ride for it', tip:'Swap one short car trip for the bike, or do a longer weekend ride. Easy on the joints, great for the heart.', cadence:'2–3× / week'});
-  if(has('Swimming')) out.push({tag:'Joint-friendly cardio', tip:'A swim once or twice a week works everything without the pounding. Great on recovery days.', cadence:'1–2× / week'});
-  if(has('Dancing')) out.push({tag:'Cardio that\'s fun', tip:'Put on a few songs and actually move. A class or a kitchen session both count as cardio.', cadence:'2–3× / week'});
-  if(has('Yoga')||has('Stretching')) out.push({tag:'Mobility', tip:'Ten minutes of stretching or a short yoga flow keeps you loose and supports everything else you do.', cadence:'Most days'});
-  if(has('Climbing')) out.push({tag:'Strength + problem-solving', tip:'A bouldering session is full-body strength that doesn\'t feel like a workout. Twice a week is plenty to progress.', cadence:'1–2× / week'});
-  if(has('Running')) out.push({tag:'Keep it easy', tip:'Most of your runs should be conversational pace. Add one faster session only when you feel like it.', cadence:'2–3× / week'});
-
-  // resistance / muscle logic
-  const likesLift = has('Lifting weights')||has('Bodyweight');
-  if(goal==='muscle'){
-    out.push({tag:'For building muscle', tip:'Resistance training is the engine here. A simple weekly split: one lower-body day, one or two upper-body days, and keep your cardio light around it.', cadence:'3–4× / week'});
-    if(!likesLift) out.push({tag:'Don\'t love the gym?', tip:'Bodyweight works to start — squats, push-ups, rows, lunges. Progress by adding reps, then find something weighted when you\'re ready.', cadence:'3× / week'});
+  const likesLift=has('Lifting weights')||has('Bodyweight');
+  if(goal==='muscle'||goal==='recomp'){
+    out.push({tag:'For building muscle',tip:'Resistance training is the engine. A simple split: one lower-body day, one or two upper-body days, keep cardio light around it.',cadence:'3–4× / week'});
+    if(!likesLift) out.push({tag:'Don\'t love the gym?',tip:'Bodyweight works to start — squats, push-ups, rows, lunges. Progress by adding reps, then add weight when ready.',cadence:'3× / week'});
   } else {
-    out.push({tag:'Why lift at all', tip:'Even if muscle isn\'t the goal, resistance training protects your bones and mobility as you age. Two short sessions a week is enough to bank that.', cadence:'2× / week'});
+    out.push({tag:'Why lift at all',tip:'Even if muscle isn\'t the goal, resistance training protects bones and mobility as you age. Two short sessions a week banks that.',cadence:'2× / week'});
   }
+  if(goal==='lean'||goal==='recomp') out.push({tag:'For leaning out',tip:'Mix movement you enjoy with two resistance sessions. Strength work keeps muscle while you lose fat — that\'s what keeps results looking good.',cadence:'4–5× / week total'});
+  if(goal==='longevity') out.push({tag:'For aging well',tip:'The longevity trio: walk often, lift twice a week, do a little balance or mobility work. Boring and unbeatable.',cadence:'Ongoing'});
+  if(goal==='calm') out.push({tag:'For stress & sleep',tip:'Lean toward walks, swims, yoga — rhythmic, lower-intensity movement that settles your nervous system rather than revving it.',cadence:'Most days'});
 
-  if(goal==='lean') out.push({tag:'For leaning out', tip:'Mix the movement you enjoy with two resistance sessions. The strength work keeps muscle while you lose fat — that\'s what keeps results looking good.', cadence:'4–5× / week total'});
-  if(goal==='longevity') out.push({tag:'For aging well', tip:'The longevity trio: walk often, lift twice a week, and do a little balance or mobility work. Boring and unbeatable.', cadence:'Ongoing'});
-  if(goal==='calm') out.push({tag:'For stress & sleep', tip:'Lean toward walks, swims, yoga — rhythmic, lower-intensity movement that settles your nervous system rather than revving it.', cadence:'Most days'});
-
-  if(!out.length) out.push({tag:'Start here', tip:'Pick the one activity above you\'d actually look forward to and do it twice this week. Enjoyment is what makes it stick.', cadence:'2× / week'});
-
-  // time-budget framing
+  if(!out.length) out.push({tag:'Start here',tip:'Pick the one activity above you\'d actually look forward to and do it twice this week. Enjoyment is what makes it stick.',cadence:'2× / week'});
   const t=STATE.prefs.time;
-  if(t==='low') out.unshift({tag:'Short on time', tip:'You said 15–20 min — that\'s enough. A brisk walk or a quick bodyweight circuit done consistently beats a long workout you skip.', cadence:'Daily-ish'});
+  if(t==='low') out.unshift({tag:'Short on time',tip:'You\'ve got 15–20 min a day — that\'s enough. A brisk walk or quick bodyweight circuit done consistently beats a long workout you skip.',cadence:'Daily-ish'});
   return out;
 }
 
-/* pick today's one-and-one nudge */
-function todayPicks(){
-  const f=foodSuggestions(), m=moveSuggestions();
-  const seed=new Date().getDate();
-  return { food:f[seed % f.length], move:m[seed % m.length] };
+/* nudge pools for the day (swap + more) */
+function buildDayPool(){
+  return { food:foodSuggestions(), move:moveSuggestions() };
+}
+function dateKey(){ return new Date().toISOString().slice(0,10); }
+function getDayNudges(){
+  const k=dateKey();
+  if(!STATE.dayNudges[k]){
+    const seed=new Date().getDate();
+    const pool=buildDayPool();
+    STATE.dayNudges[k]={ foodIdx:[seed%pool.food.length], moveIdx:[seed%pool.move.length] };
+  }
+  return STATE.dayNudges[k];
 }
 
-/* ============================================================
-   PERSISTENCE
-   ============================================================ */
+/* ====== PERSISTENCE ====== */
 async function loadState(){
   try{
-    const {data} = await sb.from('drift_state').select('payload').eq('user_id',USER.id).maybeSingle();
-    if(data&&data.payload){ STATE = Object.assign(STATE, data.payload); }
-  }catch(e){ /* table may not exist yet; fall through to local */ }
-  const local = localStorage.getItem('drift_'+USER.id);
-  if(local && !STATE.onboarded){ try{ STATE=Object.assign(STATE,JSON.parse(local)); }catch(e){} }
+    const {data}=await sb.from('forma_state').select('payload').eq('user_id',USER.id).maybeSingle();
+    if(data&&data.payload) STATE=Object.assign(STATE,data.payload);
+  }catch(e){}
+  const local=localStorage.getItem('forma_'+USER.id);
+  if(local&&!STATE.onboarded){ try{STATE=Object.assign(STATE,JSON.parse(local));}catch(e){} }
 }
 async function saveState(){
-  localStorage.setItem('drift_'+USER.id, JSON.stringify(STATE));
-  try{
-    await sb.from('drift_state').upsert({user_id:USER.id, payload:STATE, updated_at:new Date().toISOString()});
-  }catch(e){ /* offline / no table — local copy still saved */ }
+  localStorage.setItem('forma_'+USER.id,JSON.stringify(STATE));
+  try{ await sb.from('forma_state').upsert({user_id:USER.id,payload:STATE,updated_at:new Date().toISOString()}); }catch(e){}
 }
 
-/* ============================================================
-   AUTH
-   ============================================================ */
+/* ====== AUTH ====== */
 async function sendMagic(){
   const email=document.getElementById('email').value.trim();
   if(!email){ note('Enter your email first.'); return; }
   const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.href}});
-  note(error? 'Something went wrong — try again.' : 'Check your inbox for the link.');
+  note(error?'Something went wrong — try again.':'Check your inbox for the link.');
 }
 function note(t){ document.getElementById('authNote').textContent=t; }
 async function signOut(){ await sb.auth.signOut(); location.reload(); }
-
-sb.auth.onAuthStateChange(async (_e,session)=>{
-  if(session&&session.user){ USER=session.user; await boot(); }
-});
-(async()=>{
-  const {data}=await sb.auth.getSession();
-  if(data.session){ USER=data.session.user; await boot(); }
-})();
+sb.auth.onAuthStateChange(async(_e,session)=>{ if(session&&session.user){ USER=session.user; await boot(); } });
+(async()=>{ const {data}=await sb.auth.getSession(); if(data.session){ USER=data.session.user; await boot(); } })();
 
 async function boot(){
   document.getElementById('auth').classList.remove('active');
   document.getElementById('app').style.display='block';
   document.getElementById('whoLabel').textContent=USER.email+'  ·  sign out';
   await loadState();
-  if(STATE.onboarded){ show('main'); renderAll(); }
-  else { show('onboard'); }
+  if(STATE.onboarded){ show('main'); renderAll(); } else { show('onboard'); }
 }
 function show(id){
   ['onboard','main'].forEach(s=>document.getElementById(s).classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-/* ============================================================
-   ONBOARDING FLOW
-   ============================================================ */
-let obIdx=0;
+/* ====== ONBOARDING ====== */
+let obIdx=0, activeMeal='Breakfast';
 const OB_STEPS=[
-  {key:'food', title:'What food do you actually like?', sub:'Pick anything that sounds good. We build around these, not against them.', opts:FOOD_OPTS, multi:true, clay:true},
-  {key:'moveLikes', title:'How do you like to move?', sub:'Sports, walks, whatever. Pick the ones you\'d genuinely choose.', opts:MOVE_OPTS, multi:true},
-  {key:'outdoors', title:'Indoors or outdoors?', sub:'Helps us point you the right direction.', opts:['Outdoors when I can','Doesn\'t matter','Mostly indoors'], map:['yes','either','no'], multi:false},
-  {key:'goal', title:'What are you really after?', sub:'One main thing. You can chase the rest later.', opts:GOALS.map(g=>g.label), map:GOALS.map(g=>g.k), multi:false},
-  {key:'time', title:'Realistically, how much time?', sub:'Be honest — the plan should fit your week.', opts:TIMES.map(t=>t.label), map:TIMES.map(t=>t.k), multi:false}
+  {key:'meals',type:'meals'},
+  {key:'moveLikes',type:'chips',title:'How do you like to move?',sub:'Sports, walks, whatever. Pick the ones you\'d genuinely choose.',opts:MOVE_OPTS,multi:true},
+  {key:'outdoors',type:'chips',title:'Indoors or outdoors?',sub:'Helps us point you the right direction.',opts:['Outdoors when I can','Doesn\'t matter','Mostly indoors'],map:['yes','either','no'],multi:false},
+  {key:'goal',type:'chips',title:'What are you really after?',sub:'One main thing. You can chase the rest later.',opts:GOALS.map(g=>g.label),map:GOALS.map(g=>g.k),multi:false},
+  {key:'time',type:'chips',title:'Realistically, how much time per day?',sub:'Be honest — the plan should fit your day.',opts:TIMES.map(t=>t.label),map:TIMES.map(t=>t.k),multi:false}
 ];
-
-function obStep(){ document.getElementById('obIntro').style.display='none'; document.getElementById('obFlow').style.display='block'; obIdx=0; drawOb(); }
+function obStart(){ document.getElementById('obIntro').style.display='none'; document.getElementById('obFlow').style.display='block'; obIdx=0; drawOb(); }
 function drawOb(){
   const s=OB_STEPS[obIdx];
-  const dots=OB_STEPS.map((_,i)=>`<i class="${i<=obIdx?'done':''}"></i>`).join('');
-  document.getElementById('dots').innerHTML=dots;
-  let sel = STATE.prefs[s.key];
+  document.getElementById('dots').innerHTML=OB_STEPS.map((_,i)=>`<i class="${i<=obIdx?'done':''}"></i>`).join('');
+  if(s.type==='meals') drawMeals();
+  else drawChips(s);
+  document.getElementById('obBack').style.visibility=obIdx===0?'hidden':'visible';
+  document.getElementById('obNext').textContent=obIdx===OB_STEPS.length-1?'Build my plan':'Next';
+}
+function drawChips(s){
+  let sel=STATE.prefs[s.key];
   const chips=s.opts.map((o,i)=>{
-    const val = s.map? s.map[i] : o;
-    const isSel = s.multi ? (sel||[]).includes(val) : sel===val;
-    return `<button class="chip ${isSel?'sel':''} ${s.clay&&isSel?'clay-sel':''}" onclick="obPick('${s.key}','${val}',${s.multi})">${o}</button>`;
+    const val=s.map?s.map[i]:o;
+    const isSel=s.multi?(sel||[]).includes(val):sel===val;
+    return `<button class="chip ${isSel?'sel':''}" onclick="obPick('${s.key}','${val.replace(/'/g,"\\'")}',${s.multi})">${o}</button>`;
   }).join('');
   document.getElementById('obBody').innerHTML=`
     <span class="eyebrow">Step ${obIdx+1} of ${OB_STEPS.length}</span>
-    <h2 class="q serif">${s.title}</h2>
-    <p class="q-sub">${s.sub}</p>
+    <h2 class="q serif">${s.title}</h2><p class="q-sub">${s.sub}</p>
     <div class="chips">${chips}</div>`;
-  document.getElementById('obBack').style.visibility = obIdx===0?'hidden':'visible';
-  document.getElementById('obNext').textContent = obIdx===OB_STEPS.length-1?'Build my plan':'Next';
+}
+function drawMeals(){
+  const meals=['Breakfast','Lunch','Dinner','Snacks'];
+  const tabs=meals.map(mm=>{
+    const n=(STATE.prefs.meals[mm]||[]).length;
+    return `<button class="meal-tab ${mm===activeMeal?'active':''}" onclick="setMeal('${mm}')">${mm}${n?`<span class="badge">${n}</span>`:''}</button>`;
+  }).join('');
+  const sel=STATE.prefs.meals[activeMeal]||[];
+  const presets=MEAL_OPTS[activeMeal].map(o=>{
+    const isSel=sel.some(x=>x.toLowerCase()===o.toLowerCase());
+    return `<button class="chip ${isSel?'sel clay-sel':''}" onclick="toggleMeal('${o.replace(/'/g,"\\'")}')">${o}</button>`;
+  }).join('');
+  const customs=sel.filter(x=>!MEAL_OPTS[activeMeal].some(o=>o.toLowerCase()===x.toLowerCase()))
+    .map(x=>`<span class="custom-tag">${x}<b onclick="removeCustom('${x.replace(/'/g,"\\'")}')">×</b></span>`).join('');
+  document.getElementById('obBody').innerHTML=`
+    <span class="eyebrow">Step 1 of ${OB_STEPS.length}</span>
+    <h2 class="q serif">What food do you actually like?</h2>
+    <p class="q-sub">Tap through each meal. Pick what sounds good or add your own. We build around these, not against them.</p>
+    <div class="meal-tabs">${tabs}</div>
+    <div class="chips">${presets}</div>
+    ${customs?`<div class="chips">${customs}</div>`:''}
+    <div class="add-row">
+      <input class="field" id="customFood" placeholder="Add your own ${activeMeal.toLowerCase()} food…" onkeydown="if(event.key==='Enter')addCustom()">
+      <button class="btn btn-ghost btn-sm" onclick="addCustom()">Add</button>
+    </div>`;
+}
+function setMeal(mm){ activeMeal=mm; drawMeals(); }
+function toggleMeal(food){
+  const arr=STATE.prefs.meals[activeMeal];
+  const i=arr.findIndex(x=>x.toLowerCase()===food.toLowerCase());
+  if(i>-1) arr.splice(i,1); else arr.push(food);
+  drawMeals();
+}
+function addCustom(){
+  const el=document.getElementById('customFood'); const v=el.value.trim();
+  if(!v) return;
+  const arr=STATE.prefs.meals[activeMeal];
+  if(!arr.some(x=>x.toLowerCase()===v.toLowerCase())) arr.push(v);
+  el.value=''; drawMeals();
+  document.getElementById('customFood').focus();
+}
+function removeCustom(x){
+  const arr=STATE.prefs.meals[activeMeal];
+  const i=arr.findIndex(f=>f.toLowerCase()===x.toLowerCase());
+  if(i>-1) arr.splice(i,1); drawMeals();
 }
 function obPick(key,val,multi){
-  if(multi){
-    STATE.prefs[key]=STATE.prefs[key]||[];
-    const i=STATE.prefs[key].indexOf(val);
-    if(i>-1) STATE.prefs[key].splice(i,1); else STATE.prefs[key].push(val);
-  } else { STATE.prefs[key]=val; }
+  if(multi){ STATE.prefs[key]=STATE.prefs[key]||[]; const i=STATE.prefs[key].indexOf(val); if(i>-1)STATE.prefs[key].splice(i,1); else STATE.prefs[key].push(val); }
+  else STATE.prefs[key]=val;
   drawOb();
 }
 function obPrev(){ if(obIdx>0){obIdx--;drawOb();} }
 function obNextFn(){
   const s=OB_STEPS[obIdx];
-  const v=STATE.prefs[s.key];
-  if(!v || (Array.isArray(v)&&!v.length)){ toast('Pick at least one to continue'); return; }
+  if(s.type==='meals'){
+    if(!allFoods().length){ toast('Add at least one food to continue'); return; }
+  } else {
+    const v=STATE.prefs[s.key];
+    if(!v||(Array.isArray(v)&&!v.length)){ toast('Pick at least one to continue'); return; }
+  }
   if(obIdx<OB_STEPS.length-1){ obIdx++; drawOb(); }
-  else { STATE.onboarded=true; saveState(); show('main'); renderAll(); toast('Your plan is ready'); }
+  else { STATE.onboarded=true; STATE.dayNudges={}; saveState(); show('main'); renderAll(); toast('Your plan is ready'); }
 }
 
-/* ============================================================
-   TABS
-   ============================================================ */
+/* ====== TABS ====== */
 function tab(t){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
-  ['today','plan','browse','progress'].forEach(p=>{
-    document.getElementById('t-'+p).style.display = p===t?'block':'none';
-  });
+  ['today','plan','browse','progress'].forEach(p=>document.getElementById('t-'+p).style.display=p===t?'block':'none');
 }
 function renderAll(){ renderToday(); renderPlan(); renderBrowse(); renderProgress(); }
 
-/* ---- TODAY: daily check-in, one food + one move ---- */
-function dateKey(){ return new Date().toISOString().slice(0,10); }
+/* ---- TODAY ---- */
 function renderToday(){
-  const p=todayPicks();
+  const pool=buildDayPool();
+  const dn=getDayNudges();
   const d=STATE.done[dateKey()]||{};
   const hour=new Date().getHours();
-  const greet = hour<12?'Morning':hour<18?'Afternoon':'Evening';
+  const greet=hour<12?'Morning':hour<18?'Afternoon':'Evening';
+  const foodCards=dn.foodIdx.map(i=>{
+    const f=pool.food[i%pool.food.length];
+    return `<div class="card clay">
+      <div class="card-tag">Eat · ${f.tag}</div>
+      <p style="font-size:1.02rem;color:#fff">${f.tip}</p>
+      ${f.why?`<p class="mini" style="color:rgba(255,255,255,.7);margin-top:8px">${f.why}</p>`:''}
+    </div>`;
+  }).join('');
+  const moveCards=dn.moveIdx.map(i=>{
+    const mv=pool.move[i%pool.move.length];
+    return `<div class="card moss">
+      <div class="card-tag">Move · ${mv.tag}</div>
+      <p style="font-size:1.02rem;color:#fff">${mv.tip}</p>
+      ${mv.cadence?`<p class="mini" style="color:rgba(255,255,255,.7);margin-top:8px">Suggested rhythm: ${mv.cadence}</p>`:''}
+    </div>`;
+  }).join('');
   document.getElementById('t-today').innerHTML=`
     <div class="hero" style="padding:2vh 0 1vh;text-align:left">
       <span class="eyebrow">${greet}</span>
-      <h1 style="font-size:clamp(1.6rem,5vw,2.4rem)">Two small things today.</h1>
+      <h1 style="font-size:clamp(1.6rem,5vw,2.4rem)">A few small things today.</h1>
     </div>
-    <div class="card clay">
-      <div class="card-tag">Eat · ${p.food.tag}</div>
-      <p style="font-size:1.02rem;color:#fff">${p.food.tip}</p>
-      ${p.food.why?`<p class="mini" style="color:rgba(255,255,255,.7);margin-top:8px">${p.food.why}</p>`:''}
-      <div style="margin-top:14px">${d.food?'<span class="done-check" style="color:#fff">✓ Done today</span>':`<button class="btn btn-ghost" style="border-color:rgba(255,255,255,.5);color:#fff" onclick="markDone('food')">I did this</button>`}</div>
+    <div class="row-between" style="margin-bottom:8px">
+      <span class="tagline tag-food">Eat</span>
+      <span style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="swapNudge('food')">↻ Swap</button>
+        <button class="btn btn-ghost btn-sm" onclick="moreNudge('food')">＋ More</button>
+      </span>
     </div>
-    <div class="card moss">
-      <div class="card-tag">Move · ${p.move.tag}</div>
-      <p style="font-size:1.02rem;color:#fff">${p.move.tip}</p>
-      ${p.move.cadence?`<p class="mini" style="color:rgba(255,255,255,.7);margin-top:8px">Suggested rhythm: ${p.move.cadence}</p>`:''}
-      <div style="margin-top:14px">${d.move?'<span class="done-check" style="color:#fff">✓ Done today</span>':`<button class="btn btn-ghost" style="border-color:rgba(255,255,255,.5);color:#fff" onclick="markDone('move')">I did this</button>`}</div>
+    ${foodCards}
+    <div class="row-between" style="margin:18px 0 8px">
+      <span class="tagline tag-move">Move</span>
+      <span style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="swapNudge('move')">↻ Swap</button>
+        <button class="btn btn-ghost btn-sm" onclick="moreNudge('move')">＋ More</button>
+      </span>
     </div>
-    <p class="mini" style="text-align:center;margin-top:6px">New nudges each day, always pulled from what you told us you like.</p>`;
+    ${moveCards}
+    <div class="card" style="text-align:center">
+      ${d.food&&d.move?'<span class="done-check">✓ Both done today — nice.</span>':`
+        <p class="mini" style="margin-bottom:12px">Did your eat + move today?</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          ${d.food?'<span class="done-check">✓ Ate well</span>':'<button class="btn btn-ghost btn-sm" onclick="markDone(\'food\')">I ate well</button>'}
+          ${d.move?'<span class="done-check">✓ Moved</span>':'<button class="btn btn-ghost btn-sm" onclick="markDone(\'move\')">I moved</button>'}
+        </div>`}
+    </div>
+    <p class="mini" style="text-align:center;margin-top:6px">Always pulled from what you told us you like.</p>`;
+}
+function swapNudge(kind){
+  const pool=buildDayPool(); const dn=getDayNudges();
+  const arr=kind==='food'?dn.foodIdx:dn.moveIdx;
+  const len=kind==='food'?pool.food.length:pool.move.length;
+  if(len<=1){ toast('That\'s the only suggestion for now — add more likes in your plan'); return; }
+  const last=arr[arr.length-1];
+  let n=last; let guard=0;
+  while(n===last&&guard<20){ n=Math.floor(Math.random()*len); guard++; }
+  arr[arr.length-1]=n;
+  saveState(); renderToday();
+}
+function moreNudge(kind){
+  const pool=buildDayPool(); const dn=getDayNudges();
+  const arr=kind==='food'?dn.foodIdx:dn.moveIdx;
+  const len=kind==='food'?pool.food.length:pool.move.length;
+  if(arr.length>=len){ toast('That\'s all we\'ve got today — add more likes in your plan'); return; }
+  let n=Math.floor(Math.random()*len); let guard=0;
+  while(arr.includes(n)&&guard<30){ n=Math.floor(Math.random()*len); guard++; }
+  arr.push(n); saveState(); renderToday();
 }
 function markDone(kind){
-  const k=dateKey();
-  STATE.done[k]=STATE.done[k]||{};
-  STATE.done[k][kind]=true;
+  const k=dateKey(); STATE.done[k]=STATE.done[k]||{}; STATE.done[k][kind]=true;
   saveState(); renderToday(); renderProgress();
   toast(kind==='food'?'Nice — logged.':'Logged. That counts.');
 }
 
-/* ---- PLAN: full living dashboard ---- */
+/* ---- PLAN ---- */
 function renderPlan(){
   const f=foodSuggestions(), m=moveSuggestions();
   const goalLabel=(GOALS.find(g=>g.k===STATE.prefs.goal)||{}).label||'your goal';
@@ -450,7 +491,7 @@ function renderPlan(){
     <div class="hero" style="padding:2vh 0 1vh;text-align:left">
       <span class="eyebrow">Built around you · ${goalLabel}</span>
       <h1 style="font-size:clamp(1.6rem,5vw,2.2rem)">Your plan</h1>
-      <p class="mini">Update your likes anytime — <span style="text-decoration:underline;cursor:pointer" onclick="redoOnboard()">retake the quiz</span>.</p>
+      <p class="mini">Tastes change — <span style="text-decoration:underline;cursor:pointer" onclick="redoOnboard()">retake the quiz</span> anytime.</p>
     </div>
     <h3 class="serif" style="margin:6px 0 2px"><span class="tagline tag-food">Eat</span></h3>
     ${f.map(s=>cardHTML(s,'clay')).join('')}
@@ -462,32 +503,30 @@ function cardHTML(s,accent){
     <div class="card-tag" style="color:var(--${accent==='clay'?'clay':'moss'})">${s.tag}</div>
     <p style="color:var(--ink)">${s.tip}</p>
     ${s.cadence?`<p class="mini" style="margin-top:8px">Rhythm: ${s.cadence}</p>`:''}
-    ${s.why?`<p class="mini" style="margin-top:6px">${s.why}</p>`:''}
-  </div>`;
+    ${s.why?`<p class="mini" style="margin-top:6px">${s.why}</p>`:''}</div>`;
 }
-function redoOnboard(){ STATE.onboarded=false; saveState(); show('onboard'); document.getElementById('obIntro').style.display='none'; document.getElementById('obFlow').style.display='block'; obIdx=0; drawOb(); }
+function redoOnboard(){ STATE.onboarded=false; STATE.dayNudges={}; saveState(); show('onboard'); document.getElementById('obIntro').style.display='none'; document.getElementById('obFlow').style.display='block'; obIdx=0; activeMeal='Breakfast'; drawOb(); }
 
-/* ---- BROWSE: filterable library ---- */
+/* ---- BROWSE ---- */
 let browseFilter='all';
 const LIBRARY=[
-  {t:'Protein-forward breakfast',cat:'food',goal:['muscle','energy','lean'],txt:'Eggs, Greek yogurt, or oats with nuts. Front-load protein and you coast to lunch.'},
-  {t:'Half-plate veg at dinner',cat:'food',goal:['lean','longevity','energy'],txt:'Make vegetables the biggest thing on the plate. Fills you up, crowds out the rest gently.'},
-  {t:'Smarter sweet fix',cat:'food',goal:['lean','calm'],txt:'Berries, yogurt, or dark chocolate after a real meal. Keep the treat, soften the spike.'},
+  {t:'Protein-forward breakfast',cat:'food',goal:['muscle','recomp','energy','lean'],txt:'Eggs, Greek yogurt, or oats with nuts. Front-load protein and you coast to lunch.'},
+  {t:'Half-plate veg at dinner',cat:'food',goal:['lean','recomp','longevity','energy'],txt:'Make vegetables the biggest thing on the plate. Fills you up, crowds out the rest gently.'},
+  {t:'Smarter sweet fix',cat:'food',goal:['lean','recomp','calm'],txt:'Berries, yogurt, or dark chocolate after a real meal. Keep the treat, soften the spike.'},
   {t:'Beans as a base',cat:'food',goal:['lean','energy','longevity'],txt:'Lentils and beans stretch meals and keep you full for hours on cheap, plant-based protein.'},
   {t:'Caffeine before noon',cat:'food',goal:['calm'],txt:'Push coffee earlier so it\'s out of your system by bedtime. Sleep quality jumps.'},
-  {t:'The after-dinner walk',cat:'move',goal:['lean','energy','longevity','calm'],txt:'Ten to twenty minutes most evenings. The single most sustainable habit on this list.'},
-  {t:'Two lifts a week',cat:'move',goal:['muscle','longevity','lean'],txt:'Resistance training protects bone, muscle, and mobility. Two sessions banks most of the benefit.'},
+  {t:'The after-dinner walk',cat:'move',goal:['lean','recomp','energy','longevity','calm'],txt:'Ten to twenty minutes most evenings. The single most sustainable habit on this list.'},
+  {t:'Two lifts a week',cat:'move',goal:['muscle','recomp','longevity','lean'],txt:'Resistance training protects bone, muscle, and mobility. Two sessions banks most of the benefit.'},
   {t:'Scaled-down sport',cat:'move',goal:['energy','calm'],txt:'Love a sport but can\'t commit to full games? Drills, juggling, shooting around, short sessions all count.'},
-  {t:'Easy-pace cardio',cat:'move',goal:['energy','longevity','calm'],txt:'Cycling, swimming, or jogging at a conversational pace. Build the engine without burning out.'},
+  {t:'Easy-pace cardio',cat:'move',goal:['energy','longevity','calm'],txt:'Cycling, swimming, or jogging at conversational pace. Build the engine without burning out.'},
   {t:'Ten-minute mobility',cat:'move',goal:['longevity','calm'],txt:'A short stretch or yoga flow most days keeps you loose and supports everything else.'},
-  {t:'Upper / lower / cardio split',cat:'move',goal:['muscle'],txt:'A simple weekly shape: one lower day, one or two upper days, light cardio around it.'},
-  {t:'Volume eating',cat:'food',goal:['lean'],txt:'Lean on high-volume, high-fiber foods so you feel full on fewer calories. No willpower tax.'}
+  {t:'Upper / lower / cardio split',cat:'move',goal:['muscle','recomp'],txt:'A simple weekly shape: one lower day, one or two upper days, light cardio around it.'},
+  {t:'Volume eating',cat:'food',goal:['lean','recomp'],txt:'Lean on high-volume, high-fiber foods so you feel full on fewer calories. No willpower tax.'}
 ];
 function renderBrowse(){
   const cats=[['all','Everything'],['food','Eat'],['move','Move'],...GOALS.map(g=>[g.k,g.label])];
   const pills=cats.map(c=>`<button class="fpill ${browseFilter===c[0]?'on':''}" onclick="setFilter('${c[0]}')">${c[1]}</button>`).join('');
-  const items=LIBRARY.filter(x=> browseFilter==='all'||x.cat===browseFilter||(x.goal||[]).includes(browseFilter));
-  const liked=new Set([...(STATE.prefs.food||[]),...(STATE.prefs.moveLikes||[])]);
+  const items=LIBRARY.filter(x=>browseFilter==='all'||x.cat===browseFilter||(x.goal||[]).includes(browseFilter));
   document.getElementById('t-browse').innerHTML=`
     <div class="hero" style="padding:2vh 0 1vh;text-align:left">
       <span class="eyebrow">Library</span>
@@ -495,24 +534,20 @@ function renderBrowse(){
       <p class="mini">Filter by goal or type. Pull anything into your week.</p>
     </div>
     <div class="filterbar">${pills}</div>
-    ${items.length?items.map(x=>`
-      <div class="card">
-        <div class="card-tag" style="color:var(--${x.cat==='food'?'clay':'moss'})">${x.cat==='food'?'Eat':'Move'}</div>
-        <h3 class="serif">${x.t}</h3>
-        <p>${x.txt}</p>
-      </div>`).join(''):'<div class="empty">Nothing under that filter yet.</div>'}`;
+    ${items.length?items.map(x=>`<div class="card">
+      <div class="card-tag" style="color:var(--${x.cat==='food'?'clay':'moss'})">${x.cat==='food'?'Eat':'Move'}</div>
+      <h3 class="serif">${x.t}</h3><p>${x.txt}</p></div>`).join(''):'<div class="empty">Nothing under that filter yet.</div>'}`;
 }
 function setFilter(f){ browseFilter=f; renderBrowse(); }
 
-/* ---- PROGRESS: goals + streaks ---- */
+/* ---- PROGRESS ---- */
 function renderProgress(){
   const days=Object.keys(STATE.done);
   const totalActions=days.reduce((n,d)=>n+(STATE.done[d].food?1:0)+(STATE.done[d].move?1:0),0);
   const streak=calcStreak();
   const goalLabel=(GOALS.find(g=>g.k===STATE.prefs.goal)||{}).label||'—';
-  // simple weekly goal: 5 movement check-ins
-  const weekMoves=days.filter(d=>STATE.done[d].move && withinDays(d,7)).length;
-  const weekFood=days.filter(d=>STATE.done[d].food && withinDays(d,7)).length;
+  const weekMoves=days.filter(d=>STATE.done[d].move&&withinDays(d,7)).length;
+  const weekFood=days.filter(d=>STATE.done[d].food&&withinDays(d,7)).length;
   document.getElementById('t-progress').innerHTML=`
     <div class="hero" style="padding:2vh 0 1vh;text-align:left">
       <span class="eyebrow">Aiming for · ${goalLabel}</span>
@@ -533,28 +568,16 @@ function renderProgress(){
     </div>
     ${totalActions===0?'<div class="empty">Check off something on the Today tab and it\'ll show up here. The plan only works if it\'s lived in, not admired.</div>':'<p class="mini" style="text-align:center;margin-top:8px">Consistency over intensity. Showing up at 70% every week beats 100% for three days.</p>'}`;
 }
-function withinDays(dstr,n){
-  const diff=(new Date(dateKey())-new Date(dstr))/86400000;
-  return diff>=0 && diff<n;
-}
+function withinDays(dstr,n){ const diff=(new Date(dateKey())-new Date(dstr))/86400000; return diff>=0&&diff<n; }
 function calcStreak(){
   let s=0; let d=new Date();
-  for(;;){
-    const k=d.toISOString().slice(0,10);
-    const e=STATE.done[k];
-    if(e&&(e.food||e.move)){ s++; d.setDate(d.getDate()-1); }
-    else break;
-  }
+  for(;;){ const k=d.toISOString().slice(0,10); const e=STATE.done[k];
+    if(e&&(e.food||e.move)){ s++; d.setDate(d.getDate()-1); } else break; }
   return s;
 }
 
-/* ---- toast ---- */
 let tT;
-function toast(t){
-  const el=document.getElementById('toast');
-  el.textContent=t; el.classList.add('show');
-  clearTimeout(tT); tT=setTimeout(()=>el.classList.remove('show'),2200);
-}
+function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>el.classList.remove('show'),2400); }
 </script>
 </body>
 </html>
