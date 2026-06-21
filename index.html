@@ -112,7 +112,7 @@ input.field:focus{outline:2px solid var(--moss-soft);border-color:transparent}
     <div class="logo" style="justify-content:center;font-size:2rem;margin-bottom:8px"><span class="dot"></span>Forma</div>
     <p class="lead" style="color:var(--muted);margin-bottom:20px">Habits that flow with what you already love.</p>
     <input id="email" class="field" type="email" placeholder="you@email.com" autocomplete="email">
-    <button class="btn btn-primary btn-block" onclick="sendMagic()">Send me a link</button>
+    <button id="sendBtn" class="btn btn-primary btn-block" onclick="sendMagic()">Send me a link</button>
     <p class="note" id="authNote">We'll email a magic link. No password to remember.</p>
   </div>
 </div>
@@ -165,7 +165,14 @@ input.field:focus{outline:2px solid var(--moss-soft);border-color:transparent}
 /* SUPABASE — shared "Streakly" project */
 const SB_URL='https://ywjtbzxfdudrqsvsslzs.supabase.co';
 const SB_KEY='sb_publishable_Vt5ul1fZGuwxG8zq_ejyNw_kJackpiu';
-const sb=window.supabase.createClient(SB_URL,SB_KEY);
+const sb=window.supabase.createClient(SB_URL,SB_KEY,{
+  auth:{
+    detectSessionInUrl:true,
+    flowType:'pkce',
+    persistSession:true,
+    autoRefreshToken:true
+  }
+});
 
 let USER=null;
 let STATE={
@@ -325,16 +332,99 @@ async function saveState(){
 
 /* ====== AUTH ====== */
 async function sendMagic(){
-  const email=document.getElementById('email').value.trim();
+  const emailEl=document.getElementById('email');
+  const btn=document.getElementById('sendBtn');
+  const email=emailEl.value.trim();
   if(!email){ note('Enter your email first.'); return; }
-  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.href}});
-  note(error?'Something went wrong — try again.':'Check your inbox for the link.');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ note('That doesn\'t look like a valid email.'); return; }
+
+  // sending state
+  btn.disabled=true;
+  btn.textContent='Sending…';
+  note('');
+
+  const cleanUrl=window.location.origin+window.location.pathname;
+  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:cleanUrl}});
+
+  if(error){
+    btn.disabled=false;
+    btn.textContent='Send me a link';
+    note('Something went wrong — try again.');
+    return;
+  }
+
+  // sent state — make it obvious
+  emailEl.disabled=true;
+  emailEl.style.opacity='.55';
+  emailEl.style.background='var(--paper-2)';
+  btn.textContent='✓ Link sent';
+  btn.style.background='var(--moss)';
+  btn.disabled=true;
+  document.getElementById('authNote').innerHTML=`Check <b>${email}</b> for your sign-in link. It can take a minute.<br><span id="resend" style="text-decoration:underline;cursor:pointer;color:var(--moss)">Send again</span>`;
+  const r=document.getElementById('resend');
+  if(r) r.onclick=resetSend;
+}
+function resetSend(){
+  const emailEl=document.getElementById('email');
+  const btn=document.getElementById('sendBtn');
+  emailEl.disabled=false;
+  emailEl.style.opacity='';
+  emailEl.style.background='';
+  btn.disabled=false;
+  btn.textContent='Send me a link';
+  btn.style.background='';
+  note('We\'ll email a magic link. No password to remember.');
 }
 function note(t){ document.getElementById('authNote').textContent=t; }
 async function signOut(){ await sb.auth.signOut(); location.reload(); }
 let BOOTED=false, BOOTING=false;
+
+// Explicitly consume the magic-link token from the URL, handling both flows.
+async function handleAuthRedirect(){
+  const url=new URL(window.location.href);
+  const code=url.searchParams.get('code');
+  const errDesc=url.searchParams.get('error_description');
+  if(errDesc){ note(decodeURIComponent(errDesc)); cleanUrlBar(); return false; }
+
+  // PKCE flow: ?code=...
+  if(code){
+    try{
+      const {data,error}=await sb.auth.exchangeCodeForSession(code);
+      cleanUrlBar();
+      if(!error && data && data.session){ USER=data.session.user; return true; }
+    }catch(e){ console.warn('code exchange failed',e); cleanUrlBar(); }
+  }
+
+  // Implicit flow: #access_token=...&refresh_token=...
+  if(window.location.hash && window.location.hash.includes('access_token')){
+    const h=new URLSearchParams(window.location.hash.slice(1));
+    const access_token=h.get('access_token'), refresh_token=h.get('refresh_token');
+    if(access_token && refresh_token){
+      try{
+        const {data,error}=await sb.auth.setSession({access_token,refresh_token});
+        cleanUrlBar();
+        if(!error && data && data.session){ USER=data.session.user; return true; }
+      }catch(e){ console.warn('setSession failed',e); cleanUrlBar(); }
+    }
+  }
+  return false;
+}
+function cleanUrlBar(){
+  try{ history.replaceState(null,'',window.location.origin+window.location.pathname); }catch(e){}
+}
+
 sb.auth.onAuthStateChange(async(_e,session)=>{ if(session&&session.user&&!BOOTED&&!BOOTING){ USER=session.user; await boot(); } });
-(async()=>{ const {data}=await sb.auth.getSession(); if(data.session&&!BOOTED&&!BOOTING){ USER=data.session.user; await boot(); } })();
+
+(async()=>{
+  // 1) try to consume a token from the URL first
+  const fromUrl=await handleAuthRedirect();
+  if(fromUrl && !BOOTED && !BOOTING){ await boot(); return; }
+  // 2) otherwise restore an existing session
+  try{
+    const {data}=await sb.auth.getSession();
+    if(data.session && !BOOTED && !BOOTING){ USER=data.session.user; await boot(); }
+  }catch(e){ console.warn('getSession failed',e); }
+})();
 
 async function boot(){
   if(BOOTED||BOOTING) return;
