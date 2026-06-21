@@ -267,27 +267,54 @@ function buildDayPool(){
 }
 function dateKey(){ return new Date().toISOString().slice(0,10); }
 function getDayNudges(){
+  if(!STATE.dayNudges || typeof STATE.dayNudges!=='object') STATE.dayNudges={};
   const k=dateKey();
-  if(!STATE.dayNudges[k]){
+  const pool=buildDayPool();
+  let dn=STATE.dayNudges[k];
+  // migrate old idx-array format
+  if(dn && dn.foodIdx){ dn.food=dn.foodIdx.map(i=>({i,done:false})); delete dn.foodIdx; }
+  if(dn && dn.moveIdx){ dn.move=dn.moveIdx.map(i=>({i,done:false})); delete dn.moveIdx; }
+  // build fresh or repair missing arrays
+  if(!dn || !Array.isArray(dn.food) || !Array.isArray(dn.move)){
     const seed=new Date().getDate();
-    const pool=buildDayPool();
-    STATE.dayNudges[k]={ food:[{i:seed%pool.food.length,done:false}], move:[{i:seed%pool.move.length,done:false}] };
+    dn={
+      food: (dn&&Array.isArray(dn.food))?dn.food:[{i:seed%pool.food.length,done:false}],
+      move: (dn&&Array.isArray(dn.move))?dn.move:[{i:seed%pool.move.length,done:false}]
+    };
+    STATE.dayNudges[k]=dn;
   }
-  // migrate any old idx-array format
-  const dn=STATE.dayNudges[k];
-  if(dn.foodIdx){ dn.food=dn.foodIdx.map(i=>({i,done:false})); delete dn.foodIdx; }
-  if(dn.moveIdx){ dn.move=dn.moveIdx.map(i=>({i,done:false})); delete dn.moveIdx; }
   return dn;
 }
 
 /* ====== PERSISTENCE ====== */
+function mergeState(saved){
+  if(!saved||typeof saved!=='object') return;
+  STATE.onboarded = !!saved.onboarded || STATE.onboarded;
+  if(saved.done&&typeof saved.done==='object') STATE.done=saved.done;
+  if(saved.dayNudges&&typeof saved.dayNudges==='object') STATE.dayNudges=saved.dayNudges;
+  if(saved.prefs&&typeof saved.prefs==='object'){
+    const p=saved.prefs;
+    if(p.meals&&typeof p.meals==='object'){
+      for(const mk of ['Breakfast','Lunch','Dinner','Snacks']){
+        STATE.prefs.meals[mk]=Array.isArray(p.meals[mk])?p.meals[mk]:[];
+      }
+    }
+    if(Array.isArray(p.moveLikes)) STATE.prefs.moveLikes=p.moveLikes;
+    if(p.outdoors!=null) STATE.prefs.outdoors=p.outdoors;
+    if(p.goal!=null) STATE.prefs.goal=p.goal;
+    if(p.time!=null) STATE.prefs.time=p.time;
+  }
+}
 async function loadState(){
   try{
-    const {data}=await sb.from('forma_state').select('payload').eq('user_id',USER.id).maybeSingle();
-    if(data&&data.payload) STATE=Object.assign(STATE,data.payload);
-  }catch(e){}
+    const q=sb.from('forma_state').select('payload').eq('user_id',USER.id).maybeSingle();
+    const timeout=new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),3000));
+    const {data}=await Promise.race([q,timeout]);
+    if(data&&data.payload) mergeState(data.payload);
+  }catch(e){ console.warn('Cloud load skipped:',e.message); }
+  // always also check local so we never end up empty
   const local=localStorage.getItem('forma_'+USER.id);
-  if(local&&!STATE.onboarded){ try{STATE=Object.assign(STATE,JSON.parse(local));}catch(e){} }
+  if(local){ try{ if(!STATE.onboarded) mergeState(JSON.parse(local)); }catch(e){} }
 }
 async function saveState(){
   localStorage.setItem('forma_'+USER.id,JSON.stringify(STATE));
@@ -303,19 +330,49 @@ async function sendMagic(){
 }
 function note(t){ document.getElementById('authNote').textContent=t; }
 async function signOut(){ await sb.auth.signOut(); location.reload(); }
-sb.auth.onAuthStateChange(async(_e,session)=>{ if(session&&session.user){ USER=session.user; await boot(); } });
-(async()=>{ const {data}=await sb.auth.getSession(); if(data.session){ USER=data.session.user; await boot(); } })();
+let BOOTED=false, BOOTING=false;
+sb.auth.onAuthStateChange(async(_e,session)=>{ if(session&&session.user&&!BOOTED&&!BOOTING){ USER=session.user; await boot(); } });
+(async()=>{ const {data}=await sb.auth.getSession(); if(data.session&&!BOOTED&&!BOOTING){ USER=data.session.user; await boot(); } })();
 
 async function boot(){
+  if(BOOTED||BOOTING) return;
+  BOOTING=true;
   document.getElementById('auth').classList.remove('active');
+  document.getElementById('auth').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('whoLabel').textContent=USER.email+'  ·  sign out';
-  await loadState();
-  if(STATE.onboarded){ show('main'); renderAll(); } else { show('onboard'); }
+  try{ await loadState(); }catch(e){ console.error('loadState failed',e); }
+  try{
+    if(STATE.onboarded){ show('main'); renderAll(); } else { show('onboard'); }
+  }catch(e){
+    console.error('Render failed, resetting day state:',e);
+    STATE.dayNudges={};
+    try{
+      if(STATE.onboarded){ show('main'); renderAll(); } else { show('onboard'); }
+    }catch(e2){
+      console.error('Second render failed:',e2);
+      document.getElementById('t-today').innerHTML='<div class="empty">Something went sideways loading your data. <button class="btn btn-ghost btn-sm" onclick="hardReset()">Reset and start fresh</button></div>';
+      show('main');
+    }
+  }
+  BOOTED=true; BOOTING=false;
+}
+function hardReset(){
+  localStorage.removeItem('forma_'+USER.id);
+  STATE={prefs:{meals:{Breakfast:[],Lunch:[],Dinner:[],Snacks:[]},moveLikes:[],outdoors:null,goal:null,time:null},done:{},dayNudges:{},onboarded:false};
+  saveState(); show('onboard');
+  document.getElementById('obIntro').style.display='block';
+  document.getElementById('obFlow').style.display='none';
 }
 function show(id){
-  ['onboard','main'].forEach(s=>document.getElementById(s).classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  ['onboard','main'].forEach(s=>{
+    const el=document.getElementById(s);
+    el.classList.remove('active');
+    el.style.display='none';
+  });
+  const t=document.getElementById(id);
+  t.classList.add('active');
+  t.style.display='block';
 }
 
 /* ====== ONBOARDING ====== */
